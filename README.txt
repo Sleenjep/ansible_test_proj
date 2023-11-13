@@ -11,7 +11,7 @@ check_for_usb_devices_role работает только с usb-флешками
 	5. Роль просит вернуть usb-устройство.
 	6. Роль убеждается, что вставлено то же самое устройство, что было вставлено на шаге 2.
 	
-Запуск производится из дирректории ansible с помощью команды: ansible-playbook -i hosts master_playbook.yml
+Запуск производится из дирректории ansible_test_proj с помощью команды: ansible-playbook -i hosts master_playbook.yml
 
 Operating System: Ubuntu 22.04.3 LTS              
           Kernel: Linux 6.2.0-36-generic
