@@ -1,0 +1,75 @@
+---
+- name: REQUEST FOR INSTALL 
+  shell: 'echo "Input your usb device"'
+  register: msg
+- debug:
+    var: msg.stdout
+        
+- name: USB DEVICE INSTALL CHECK
+  shell: | 
+    while true 
+    do 
+      device=$(df -h | grep media | cut -d/ -f 6)
+      if [ -n "$device" ]; then
+        echo $device
+        break
+      else 
+        sleep 1
+      fi
+    done 
+  register: correct_usb
+- set_fact: msg="{{ correct_usb.stdout }} device was found"
+- debug: 
+    var: msg
+  
+- name: REQUEST FOR REMOVE USB
+  shell: 'echo "Remove {{ correct_usb.stdout }} device"'
+  register: msg
+- debug:
+    var: msg.stdout
+    
+- name: USB DEVICE REMOVE CHECK
+  shell: | 
+    while true
+    do 
+      device=$(df -h | grep media | cut -d/ -f 6)
+      if [ -n "$device" ]; then
+        sleep 1
+      else 
+        echo "Usb device $curr_usb was removed"
+        break
+      fi
+    done
+  register: msg
+- debug:
+    var: msg.stdout
+
+- name: REQUEST FOR REINSTALL USB
+  shell: 'echo "Input back {{ correct_usb.stdout }} device"'
+  register: msg
+- debug:
+    var: msg.stdout
+    
+- name: USB DEVICE REINSTALL CHECK
+  shell: |
+    while [ -z "$(df -h | grep media)" ]
+    do
+      sleep 1                           
+    done
+    
+- name: CHECKING FOR CORRECTNESS (INPUT {{ correct_usb.stdout}} device )
+  shell: |
+    while true 
+    do 
+      another_device=$(df -h | grep media | cut -d/ -f 6)
+      if [ "$another_device" = "{{ correct_usb.stdout }}" ]; then
+        echo "{{ correct_usb.stdout }} was installed (the correct one)"
+        break
+      else 
+        sleep 1
+      fi
+    done
+  register: msg
+- debug: 
+    var: msg.stdout
+...
